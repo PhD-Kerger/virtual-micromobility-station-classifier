@@ -1,0 +1,7 @@
+pyarrow
+pandas
+scikit-learn
+folium
+shapely
+tqdm
+matplotlib

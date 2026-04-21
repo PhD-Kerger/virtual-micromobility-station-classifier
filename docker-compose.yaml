@@ -1,0 +1,15 @@
+services:
+  micromobility-station-classifier:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+
+    networks:
+      - mobility-network
+
+networks:
+  mobility-network:
+    external: true
