@@ -190,7 +190,7 @@ def main():
                         logger.info(f"Proceeding with classification for {args.city}...")
                         classifier = StationClassifier()
                         classify_data = extract_network_data(
-                            args.city, mode="classify", max_files=args.max_files
+                            args.city, mode="classify", max_files=-1
                         )
                         if classify_data:
                             classifier.classify_locations(args.city, classify_data)

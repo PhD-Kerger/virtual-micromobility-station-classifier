@@ -174,7 +174,7 @@ def extract_network_data(target_network, mode="train", max_files=None):
             match_count += 1
             pbar.set_postfix({"matches": match_count})
 
-        if max_files and match_count >= max_files:
+        if match_count == max_files:
             break
 
     if not df_list:
@@ -264,9 +264,10 @@ def classify_network_type(network_name, max_files=50):
             for f in os.listdir(paths["availability"])
             if f.endswith(".parquet")
         ]
-    )[:max_files]
+    )
 
     df_list = []
+    limit = 0
     for file_path in tqdm(files, desc=f"Classifying {network_name}"):
         try:
             df = pd.read_parquet(
@@ -276,6 +277,9 @@ def classify_network_type(network_name, max_files=50):
             df = df[df["network_name"] == network_name]
             if not df.empty:
                 df_list.append(df)
+                limit += 1
+            if limit >= max_files:
+                break
         except Exception:
             continue
 
