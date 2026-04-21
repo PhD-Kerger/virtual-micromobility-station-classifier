@@ -57,8 +57,15 @@ class StationClassifier:
             for lat, lng in locations:
                 point = [lng, lat]
 
+                # Distance calculation for fuzzy hull buffer
+                dist, station_idx = tree.query(point)
+                dist_meters = dist * 111000  # Approx
+
                 # Check if point is within convex hull
-                if hull_path and not self._is_in_hull(point, hull_path):
+                in_hull = self._is_in_hull(point, hull_path) if hull_path else True
+                
+                # Outlier if outside hull AND further than 250m from nearest hub
+                if not in_hull and dist_meters > 250:
                     results.append(
                         {
                             "lat": lat,
@@ -67,16 +74,12 @@ class StationClassifier:
                             "station_name": None,
                             "station_lat": None,
                             "station_lng": None,
-                            "distance_m": None,
+                            "distance_m": dist_meters,
                             "is_virtual": False,
                             "status": "outlier",
                         }
                     )
                     continue
-
-                # Query uses [lng, lat] to match training
-                dist, station_idx = tree.query(point)
-                dist_meters = dist * 111000  # Approx
 
                 # Get site coordinates if hubs available
                 s_lat, s_lng = (None, None)
