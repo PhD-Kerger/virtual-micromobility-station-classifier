@@ -161,6 +161,12 @@ def main():
             if result:
                 print(json.dumps(result, indent=2))
 
+                # Export intermediate files as requested
+                city_dir = os.path.join("data", args.city.lower())
+                os.makedirs(city_dir, exist_ok=True)
+                with open(os.path.join(city_dir, "network_info.json"), "w") as f:
+                    json.dump(result, f, indent=2)
+
                 is_station_based = result.get("network_classification") == "Station-based"
 
                 if is_station_based:
